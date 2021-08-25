@@ -8,6 +8,9 @@ import shutil
 import threading
 MAX_COPY_NUMBER = 20
 
+# sleep of 10 seconds @ startup to let all the drives get mounted
+time.sleep(10)
+
 # GPIO setup for led and btn
 BUTTON_PRESS_DURATION = 0.5
 buttonPin = 11
@@ -61,14 +64,14 @@ def control_led(state, speed):
 
 # function to wait for btn press
 
-def wait_for_btn_press():
-    print('waiting for btn press ...')
+def wait_for_btn_press(reason):
+    print('waiting for btn press {0} ...'.format(reason))
     while True:
         input_state = GPIO.input(buttonPin)
         time.sleep(BUTTON_PRESS_DURATION)
         if input_state == False:
             # button pressed
-            print('btn pressed!...')
+            print('btn pressed! for {0} ...'.format(reason))
             break
 
 
@@ -184,12 +187,11 @@ def init():
     if(is_copy_done()):
         # fastblink led to denote files are already copied
         control_led('blink', 'fast')
-        wait_for_btn_press()
+        wait_for_btn_press('copy done')
         init()
     else:
-        print('copy not done')
         control_led('on', '')
-        wait_for_btn_press()
+        wait_for_btn_press('copy not done')
         # start copy process
         control_led('blink','normal')
         # format process
