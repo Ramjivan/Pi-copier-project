@@ -192,10 +192,14 @@ def init():
         wait_for_btn_press()
         # start copy process
         control_led('blink','normal')
+        # format process
+        empty_drives()
         #copy_operation()   # Use in python version 3.9 or above only
         subprocess.call(['./copy.sh'])    #use in python 3.7 or lower versions
         #set_copy_count(get_copy_count()+1)
+        init()
 
+# ------- Initializing pr0gram ---------- #
 init()
         
 
